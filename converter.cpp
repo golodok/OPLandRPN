@@ -1,17 +1,25 @@
 #include "converter.h"
 
+
+// !!! Почти нигде нет контроля на выход за границы массивов/списков
+
 Converter::Converter()
 {
 
 }
 
+// Функция проверки не должна завязываться на позицию элемента в контейнере
+// Нужны обстракции. 
+// Если функция Is... она должна принимать только один элемент для проверки.
 bool Converter::isNumberFromRPN(QList<std::string> &QLInput)
 {
-    std::string sTmp = QLInput[0];
-    if(isdigit(sTmp[0])) return true;
+    std::string sTmp = QLInput[0]; // А что если список пустой?
+    // Ретурны в одной строке с условиями - не очень хороший стиль.
+    if(isdigit(sTmp[0])) return true; // А что,е сли строка пустая?
     else return false;
 }
 
+// Алгоритм плохо читается
 void Converter::fromRPN(std::string input)
 {
     output = "";
@@ -21,8 +29,14 @@ void Converter::fromRPN(std::string input)
     std::string iPrioritet;
     QList<std::string> QLInput;
 
-    preparationInput(input,QLInput);
+    // Как из названия функции понять, что она делает?
+    // Старайся давать говорящие имена. Например, даже банальное strToList понятнее
+    preparationInput(input,QLInput); 
     while(!QLInput.empty()){
+
+        // Реалилизация по факту ничем не отличается от предыдущей. 
+        // Итерация по списку всё равно внутри вложенных функций. 
+        // Это очень опасно и нечитабельно.
         if(isNumberFromRPN(QLInput)){
             std::string sTmp =  QLInput[0];
             if(sTmp.size()>1){
@@ -46,16 +60,17 @@ void Converter::fromRPN(std::string input)
                     auto it = map.find(sTmpInput[0]);
                     std::string sTmp;
 
-                    if(sTmpPtioritet!=" " && sTmpPtioritet<iPrioritet) {
-                        sTmp="(" + stack2.pop()+")"+it->first+"(";
-                        stack2.puch(sTmp);
+
+                    if(sTmpPtioritet!=" " && sTmpPtioritet<iPrioritet) { 
+                        sTmp="(" + stack2.pop()+")"+it->first+"(";       
+                        stack2.puch(sTmp);          
                         sTmp= " ";
                     }
                     else{
                         sTmp=stack2.pop() + sTmpInput[0];
                         stack2.puch(sTmp);
                     }
-                    if(sTmpPtioritet!=" " && sTmpPtioritet<iPrioritet){
+                    if(sTmpPtioritet!=" " && sTmpPtioritet<iPrioritet){ // Явное дублирование кода выше. Будут ошибки
                         sTmp+=stack1.pop()+")";
                         stack1.puch(sTmp);
                         sTmp=" ";
@@ -66,13 +81,14 @@ void Converter::fromRPN(std::string input)
             }
         }
     }
-    printOutput(m_stack,input);
+    printOutput(m_stack,input); // Это здесь лишнее. Нарушение абстракции.
 }
 
 
 
 void Converter::preparationInput(std::string &input, QList<std::string> &QLInput)
 {
+    // Есть готовые функции для разбиения строк на токены
     std::string sTmp;
     for(int i =0;i!=input.size();i++){
         if(isdigit(input.at(i)) || input.at(i)!= ' ' || map.find(input.at(i))!=map.end() ){
@@ -94,8 +110,9 @@ void Converter::preparationInput(std::string &input, QList<std::string> &QLInput
     }
 }
 
-bool Converter::isZnackFromRPN(QList<std::string> &QLInput)
+bool Converter::isZnackFromRPN(QList<std::string> &QLInput) //константность
 {
+    // Проверки на выход за пределы
     std::string sTmp =QLInput[0];
     if(map.find(sTmp[0]) != map.end())
         return true;
@@ -110,6 +127,8 @@ bool Converter::determinationOfZhackFromRPN(std::string &iPrioretet, QList<std::
         iPrioretet = it->second;
         return true;
     }
+
+    // CRASH.Где возвращаемое значение?
 }
 
 void Converter::printOutput(Stack<std::string> &m_stack, std::string &input)
@@ -125,7 +144,7 @@ void Converter::concatStackFromRPN(Stack<std::string> &stack2, Stack<std::string
 {
     std::string sTmp;
     std::string sStack2 =stack2.pop();
-    sTmp = sStack2 + stack1.pop();
+    sTmp = sStack2 + stack1.pop(); // Для подобных целей лучше подходит stringstream
     m_stack.puch(sTmp);
     stack2.puch(sStack2);
     stack2.puch(iPrioritet);
@@ -193,6 +212,8 @@ bool Converter::isZnackFromOPL(QList<std::string> &QLInput)
     else return false;
 }
 
+// функции не должны иметь названия виду workWith. Чаще всего это свидетельствует о том, что функция спроектирована неверно.
+// Совершенно непонятно, что она делает
 void Converter::workWhistOperFromOPL(QList<std::string> &QLInput, Stack<std::string> &m_stack)
 {
     std::string sZnack2 = QLInput[0];

@@ -17,11 +17,11 @@ class List
 public:
     std::shared_ptr<Node<TList>> head;
     List():head(nullptr){}
-    void add(const TList);
+    void add(const TList); //ссылку забыл //связанные методы должны называться похоже. если есть pop_back, должен быть и push_back
     TList get (int N);
     TList pop_back();
     int count();
-    void clear(){head = nullptr;}
+    void clear(){head = nullptr;} //лучше явно удалить элементы
 
 
 };
@@ -39,15 +39,20 @@ template<typename TList>
 TList List<TList>::get(int N)
 {
     std::shared_ptr<Node<TList>> tmp(head);
-    if ((head != nullptr)  ) {
-        for (int i = 0; i <=N; ++i)
+
+//большая вложенность - плохо
+//можно раскрутить так:
+// if (!head) return nullptr;
+//
+    if ((head != nullptr)  ) { 
+        for (int i = 0; i <=N; ++i) //Если в теле структуры больше одной строки, обязательно используй {}
             if(tmp->next != nullptr){
                 tmp = tmp->next;
                 return tmp->value;
             }else
             {
-                TList value =  tmp->value;
-                tmp = tmp->next;
+                TList value =  tmp->value; //в этой строке нет смысла
+                tmp = tmp->next; //в этой строке нет смысла
                 return value;
             }
     }
@@ -65,7 +70,7 @@ TList List<TList>::pop_back()
 }
 
 
-
+//Дорогая функция, которую можно заменить на счетчик-member
 template<typename T>
 int List<T>::count()
 {
