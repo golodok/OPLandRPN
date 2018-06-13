@@ -7,12 +7,11 @@ template< typename SType>
 class Stack
 {
     List<SType> LCurrent;
-    int sizeOfStack;
 public:
-    Stack():sizeOfStack(0){ }
+
     void puch(const SType);
     SType pop();
-    int size(){return sizeOfStack;}
+    int size();
 };
 
 
@@ -20,14 +19,18 @@ public:
 template<typename SType>
 void Stack<SType>::puch(const SType value)
 {
-        LCurrent.add(value);
-        sizeOfStack++;
+        LCurrent.puch_back(value);
 }
 
 template<typename SType>
 SType Stack<SType>::pop()
 {
-    sizeOfStack--;
     return  LCurrent.pop_back();
 
+}
+
+template<typename SType>
+int Stack<SType>::size()
+{
+      return  LCurrent.count();
 }

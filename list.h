@@ -13,45 +13,49 @@ struct Node{
 template<typename TList>
 class List
 {
-
+    int sizeOfList;
 public:
     std::shared_ptr<Node<TList>> head;
-    List():head(nullptr){}
-    void add(const TList);
+    List():head(nullptr),sizeOfList(0){}
+    void puch_back(const  TList &);
     TList get (int N);
     TList pop_back();
-    int count();
-    void clear(){head = nullptr;}
+    int count(){ return sizeOfList;}
+    void clear();
 
 
 };
 
 template<typename TList>
-void List<TList>::add( TList value)
+void List<TList>::clear(){
+    std::shared_ptr<Node<TList>> tmp(head);
+    while(head!= nullptr){
+        head = tmp->next;
+        sizeOfList--;
+    }
+}
+
+template<typename TList>
+void List<TList>::puch_back(const TList & value)
 {
     std::unique_ptr<Node<TList>> tmp(new Node<TList>());
     tmp->value = value;
     tmp->next = head;
     head = move(tmp);
+    sizeOfList++;
 }
 
 template<typename TList>
 TList List<TList>::get(int N)
 {
     std::shared_ptr<Node<TList>> tmp(head);
-    if ((head != nullptr)  ) {
-        for (int i = 0; i <=N; ++i)
-            if(tmp->next != nullptr){
-                tmp = tmp->next;
-                return tmp->value;
-            }else
-            {
-                TList value =  tmp->value;
-                tmp = tmp->next;
-                return value;
-            }
+    if(!head) return nullptr;
+    else{
+        for (int i = 0; i <=N; ++i){
+            tmp = tmp->next;
+            return tmp->value;
+        }
     }
-    return nullptr;
 }
 
 template<typename TList>
@@ -60,24 +64,11 @@ TList List<TList>::pop_back()
     std::shared_ptr<Node<TList>> tmp(head);
     if(head!= nullptr){
         head = tmp->next;
+        --sizeOfList;
         return tmp->value;
     }
-   return nullptr;
+    return nullptr;
 }
 
 
-
-template<typename T>
-int List<T>::count()
-{
-    int count =0;
-    std::shared_ptr<Node<T>> tmp(head);
-    if ((head != nullptr)  ) {
-        while(tmp != nullptr){
-            tmp = tmp->next;
-            count++;
-        }
-    }
-    return count;
-}
 
