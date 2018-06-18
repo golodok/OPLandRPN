@@ -10,9 +10,9 @@ AddresBook::AddresBook(QWidget *parent)
 
 void AddresBook::readFile()
 {
-	DataOfThePerson data;
+	DataOfThePerson data; // Объявление должно быть как можно ближе к использованию
 	QList<DataOfThePerson> qDataList;
-	QFile file("DataAdress.csv");
+	QFile file("DataAdress.csv"); // Путь в коде - плохо
 	if (file.exists() && file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		QTextStream stream(&file);
 		while (!stream.atEnd()) {
@@ -27,11 +27,12 @@ void AddresBook::readFile()
 	fullTable(qDataList);
 	}
 	else {
-		qDebug() << "������ ��� �������� �����";
+		qDebug() << "������ ��� �������� �����";
 	}
 	file.close();
 }
 
+// Реализовать через QAbstractItemModel
 void AddresBook::fullTable(const QList<DataOfThePerson> & qDataList)
 {
 	int count = 0;
@@ -50,6 +51,7 @@ void AddresBook::fullTable(const QList<DataOfThePerson> & qDataList)
 	ui.tableWidgetBook->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
 }
 
+// Не используется - удалить
 DataOfThePerson & AddresBook::getStr(const QStringList & qLdata)
 {
 	DataOfThePerson data;
@@ -59,7 +61,8 @@ DataOfThePerson & AddresBook::getStr(const QStringList & qLdata)
 void AddresBook::parseStrToData(const QString & str, DataOfThePerson & data)
 {
 	QRegExp rx("[;]");
-	QStringList lToken = str.split(rx);
+	QStringList lToken = str.split(rx); // Какой здесь смысл в QRegExp?
+	// А что будет, если в строке окажется меньше 6-ти полей?
 	data.setName(lToken[0]);
 	data.setSurname(lToken[1]);
 	data.setOtshestvo(lToken[2]);

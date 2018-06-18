@@ -2,6 +2,8 @@
 #include <QString>
 class DataOfThePerson
 {
+
+// Спецификаторы доступа лучше располагать сверху вниз по степени доступности. т.е. public в самом верху	
 private:
 
 	QString sName;
@@ -12,7 +14,7 @@ private:
 	QString sAddress;
 
 public:
-	void setName(const QString sName) {
+	void setName(const QString sName) { // Ссылки
 		this->sName = sName;
 	}
 	QString getName() { return sName;}
@@ -42,7 +44,7 @@ public:
 	}
 	QString getAddress() { return sAddress; }
 
-	DataOfThePerson() :sName(""), sSurname(""), sOtshetvo(""), sNumberOfPhone(""), sEmail(""),sAddress("") {};
+	DataOfThePerson() :sName(""), sSurname(""), sOtshetvo(""), sNumberOfPhone(""), sEmail(""),sAddress("") {}; // QString инициировать не надо
 
 
 };
